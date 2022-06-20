@@ -1,43 +1,34 @@
-// On récupère la section ITEMS depuis l'index, on va y injecter des éléments grâce à la méthode Appenchild 
 const items = document.querySelector('.items')
+let newLink= []; 
+let newArticle = []; 
+let newImage = []; 
+let newTitle = []; 
+let newDescription = []; 
 
 
-// On initialise des tableaux qui nous serviront pour y créer l'ensmeble de tous les éléments de la page Index 
-let productLink         = []; 
-let newArticle          = []; 
-let productImage        = []; 
-let productTitle        = []; 
-let productDescription  = []; 
+fetch('http://localhost:3000/api/products')
+    .then(response => response.json())
+    .then(data => {
+        for (i = 0; i < data.length; i++) {
 
-// Appel à l'API
-function APICall() {
-    fetch("http://localhost:3000/api/products")
-        .then((response) => response.json())
-        .then((data) => {
-            // On boucle à travers les données fournies par l'API
-            for (i = 0; i < data.length; i++) {
-                // Créations dans le DOM de tous les éléments qui composent la carte de chaque canapé
-                productLink         = document.createElement("a");
-                newArticle          = document.createElement("article");
-                productImage        = document.createElement("img");
-                productTitle        = document.createElement("h3");
-                productDescription  = document.createElement("p");
+            newLink = document.createElement('a'); 
+            newArticle = document.createElement('article');
+            newImage = document.createElement('img'); 
+            newTitle = document.createElement('h3')
+            newDescription = document.createElement('p')
+            
+            newLink.href += `product.html?id=${(data[i]._id)}`; 
+            newImage.alt += `${(data[i].altTxt)}`; 
 
-                // Après avoir créé les éléments, on y injecte toutes les données fournies par l'API
-                productLink.href                += `product.html?id=${data[i]._id}`;
-                productImage.alt                += `${data[i].altTxt}`;
-                productImage.src                = data[i].imageUrl;
-                productTitle.innerText          = data[i].name;
-                productDescription.innerText    = data[i].description;
 
-                // Enfin on place tous les éléments à l'intérieur de la section Items 
-                items       .appendChild(productLink);
-                productLink .appendChild(newArticle);
-                newArticle  .appendChild(productImage);
-                newArticle  .appendChild(productTitle);
-                newArticle  .appendChild(productDescription);
-            }
-        });
-}
-// On appelle la fonction pour qu'elle se lance 
-APICall();
+            newImage.src = data[i].imageUrl;
+            newTitle.innerText = data[i].name; 
+            newDescription.innerText = data[i].description; 
+
+            items.appendChild(newLink);
+            newLink.appendChild(newArticle); 
+            newArticle.appendChild(newImage); 
+            newArticle.appendChild(newTitle); 
+            newArticle.appendChild(newDescription)
+        }
+    })
