@@ -124,3 +124,104 @@ for (i = 0; i < cart.length; i++) {
         console.log(cart);
 
 }
+
+
+// Section du formulaire avec validation de tous les champs
+
+// Création des expressions régulières => RegExp
+
+let emailReg            = new RegExp('^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$');
+// Cette même Rgex sera mobilisé pour le prenom, nom et la ville 
+let textRegExp          = new RegExp("^[a-zA-Z-àâäéèêëïîôöùûüç ,.'-]+$");
+let addressRegExp       = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+
+// Validation du formulaire  
+
+function ValidationFormulaire() {
+
+    let formulaire = document.querySelector('.cart__order__form');
+
+      // Validation du prénom
+
+    formulaire.firstName.addEventListener('input', function () {
+        validPrenom(this);
+    })
+
+  
+
+    let validPrenom = function (inputPrenom) {
+        let erreurPrenom = inputPrenom.nextElementSibling;
+        erreurPrenom.innerHTML = ""
+        if (!textRegExp.test(inputPrenom.value)) {
+            erreurPrenom.innerHTML = 'Votre prénom est invalide';
+        }
+
+    };
+    // Validation du choix du nom 
+
+    formulaire.lastName.addEventListener('input', function () {
+        valideNomFamille(this)
+    })
+
+    
+
+    let valideNomFamille = function (inputNom) {
+        let erreurNom = inputNom.nextElementSibling;
+        erreurNom.innerHTML = ""
+        if (!textRegExp.test(inputNom.value)) {
+            erreurNom.innerHTML = 'Votre nom est invalide';
+        }
+    }
+
+    // Validation de l'adresse postale
+
+    formulaire.address.addEventListener('input', function () {
+        validAddresse(this);
+
+    })
+
+    
+
+    let validAddresse = function (inputAddresse) {
+        let erreurAdresse = inputAddresse.nextElementSibling;
+        erreurAdresse.innerHTML = ""; 
+        if (!addressRegExp.test(inputAddresse.value)) {
+            erreurAdresse.innerHTML = 'Votre adresse est invalide';
+        }
+    }
+
+    // Validation du nom de la ville     
+
+    formulaire.city.addEventListener('input', function () {
+        validVille(this);
+    })
+
+    
+
+    let validVille = function (inputVille) {
+        let erreurVille = inputVille.nextElementSibling;
+        erreurVille.innerHTML = ""
+        if (!textRegExp.test(inputVille.value)) {
+            erreurVille.innerHTML = 'Le nom de votre ville est invalide';
+        }
+
+    }
+        
+    // Vdlidation du mail     
+
+    formulaire.email.addEventListener('input', function () {
+        validEmail(this);
+    })
+
+
+    let validEmail = function (inputEmail) {
+        let erreurMail = inputEmail.nextElementSibling;
+        erreurMail.innerHTML = '';
+        if (!emailReg.test(inputEmail.value)) {
+                erreurMail.innerHTML = 'Votre adresse mail est invalide'
+        }
+    }
+}
+// Appel à la fonction pour qu'elle s'exécute  
+ValidationFormulaire();
+
