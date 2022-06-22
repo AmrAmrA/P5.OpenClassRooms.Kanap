@@ -130,17 +130,19 @@ for (i = 0; i < cart.length; i++) {
 
 // Création des expressions régulières => RegExp
 
-let emailReg            = new RegExp('^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$');
-// Cette même Rgex sera mobilisé pour le prenom, nom et la ville 
+// Cette première Rgex sera mobilisée pour le prenom, nom et la ville 
 let textRegExp          = new RegExp("^[a-zA-Z-àâäéèêëïîôöùûüç ,.'-]+$");
 let addressRegExp       = new RegExp("^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+");
+let emailReg            = new RegExp('^[a-zA-Z0-9._-]+[@]{1}[a-zA-Z0-9._-]+[.]{1}[a-z]{2,10}$');
+
+
+// Récupérer le formulaire en dehors du contexte de la fonction pour ne pas avoir à le rappeler 
+let formulaire = document.querySelector('.cart__order__form');
 
 // Validation du formulaire  
-
 function ValidationFormulaire() {
 
-    let formulaire = document.querySelector('.cart__order__form');
-
+    
       // Validation du prénom
 
     formulaire.firstName.addEventListener('input', function () {
@@ -225,3 +227,53 @@ function ValidationFormulaire() {
 // Appel à la fonction pour qu'elle s'exécute  
 ValidationFormulaire();
 
+
+
+// Envoi du formulaire volidé vers le Backend
+function sendForm() {
+    
+formulaire.addEventListener('submit', function(e) {
+    e.preventDefault(); 
+
+
+
+    let productsId = []; 
+    for (let i = 0;  i < cart.length; i++) {
+        productsId.push(cart[i].productId)
+        console.log(cart[i].productId);
+    }
+
+    let order = {
+          contact: {
+            firstName       : formulaire.firstName.value,   
+            lastName        : formulaire.lastName.value,
+            adress          : formulaire.address.value, 
+            city            : formulaire.city.value, 
+            email           : formulaire.email.value
+        }, 
+        products : productsId
+    }
+
+    console.log(order);
+
+    let options = {
+        method  : 'POST',
+        body    : JSON.stringify(order), 
+        headers: {
+            "content-type": 'application/json',
+        }
+    }
+    fetch('http://localhost:3000/api/products/order', options)
+    .then((res) => res.json())
+    .then((data) => {
+        console.log(data);
+        localStorage.clear();
+        // localStorage.setItem('orderId', data.orderId);
+
+        document.location.href = `confirmation.html?orderId=${productsId}`;
+    })
+ }
+)
+
+}
+sendForm(); 
