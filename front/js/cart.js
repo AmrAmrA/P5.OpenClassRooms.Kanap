@@ -121,7 +121,6 @@ for (i = 0; i < cart.length; i++) {
      
 
         });
-        console.log(cart);
 
 }
 
@@ -229,13 +228,9 @@ ValidationFormulaire();
 
 
 
-// Envoi du formulaire volidé vers le Backend
-function sendForm() {
-    
+// Envoi du formulaire validé vers le Backend
 formulaire.addEventListener('submit', function(e) {
     e.preventDefault(); 
-
-
 
     let productsId = []; 
     for (let i = 0;  i < cart.length; i++) {
@@ -247,9 +242,9 @@ formulaire.addEventListener('submit', function(e) {
           contact: {
             firstName       : formulaire.firstName.value,   
             lastName        : formulaire.lastName.value,
-            adress          : formulaire.address.value, 
+            address          : formulaire.address.value, 
             city            : formulaire.city.value, 
-            email           : formulaire.email.value
+            email           : formulaire.email.value 
         }, 
         products : productsId
     }
@@ -267,13 +262,9 @@ formulaire.addEventListener('submit', function(e) {
     .then((res) => res.json())
     .then((data) => {
         console.log(data);
-        localStorage.clear();
-        // localStorage.setItem('orderId', data.orderId);
+        // localStorage.clear();
 
-        document.location.href = `confirmation.html?orderId=${productsId}`;
+        window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
     })
- }
-)
 
-}
-sendForm(); 
+})
