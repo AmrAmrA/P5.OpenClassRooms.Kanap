@@ -6,7 +6,7 @@ let globalSection       = document.querySelector('#cart__items');
 for (i = 0; i < cart.length; i++) {
         
      let itemId         = cart[i].productId; 
-     let itemColor      = cart[i].colorsproduct; 
+     let itemColor      = cart[i].colorsProduct; 
      let itemQuantity   = cart[i].quantityProduct; 
 
 
