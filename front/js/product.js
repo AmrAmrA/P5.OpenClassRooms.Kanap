@@ -6,19 +6,20 @@ function productComponents() {
   fetch(`http://localhost:3000/api/products/${productId}`)
     .then((response) => response.json())
     .then((data) => {
-      document.querySelector(".item__img").innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+      document.querySelector(
+        ".item__img"
+      ).innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
       document.querySelector(".item #title").innerText = data.name;
       document.querySelector(".item #price").innerText = data.price;
       document.querySelector(".item #description").innerText = data.description;
-      document.querySelector(".item #colors").insertAdjacentHTML("beforeend",data.colors.map((color) => `<option value="${color}">${color}</option>`));
+      document.querySelector(".item #colors").insertAdjacentHTML(
+        "beforeend",
+        data.colors.map((color) => `<option value="${color}">${color}</option>`)
+      );
     });
 }
-// Appel de la fonction pour l'exécuter 
+// Appel de la fonction pour l'exécuter
 productComponents();
-
-
-
-
 
 function addProduct() {
   // Lancement d'une fonction anonyme lors du clique sur le bouton "ajouter au panier"
@@ -40,7 +41,12 @@ function addProduct() {
     // Condition pour accepter un produit dans le localStorage
     // L'utilisateur doit sélectionner une couleur et entre 1 et 100 canapés pour continuer à avancer
 
-    if (quantityProduct <= 0 || quantityProduct > 100 || colorsProduct == "") {
+    if (
+      quantityProduct <= 0 ||
+      quantityProduct > 100 ||
+      isNaN(quantityProduct) ||
+      colorsProduct == ""
+    ) {
       // Si la condition n'est pas respectée, l'utilisateur reçoit une alerte
       alert(
         "Vous devez choisir une quantité entre 1 et 100 et une couleur pour votre objet"

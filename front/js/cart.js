@@ -10,6 +10,7 @@ for (i = 0; i < cart.length; i++) {
   fetch(`http://localhost:3000/api/products/${itemId}`)
     .then((response) => response.json())
     .then((data) => {
+      // Création et placement des éléments HTML dans le DOM
       let newSection = document.createElement("article");
       newSection.classList.add("cart__item");
       newSection.dataset.id = `${itemId}`;
@@ -100,15 +101,12 @@ for (i = 0; i < cart.length; i++) {
         }
       }
 
-
-      deleteParagraph.addEventListener('click', function (p)  {
-        let cartQuantity = JSON.parse(localStorage.getItem("cart"));
-        cartQuantity = cart.filter(element => element.itemId != p.itemId || element.itemColor !== p.itemColor)
-        localStorage.setItem("cart", JSON.stringify(cartQuantity));
-        location.reload();
+      deleteParagraph.addEventListener("click", function (p) {
+        p.target.closest(".cart__item").remove();
+        localStorage.setItem("cart", JSON.stringify(cart));
         console.log(cart);
-      })
-
+        location.reload;
+      });
 
       function cartCount() {
         let newCart = JSON.parse(localStorage.getItem("cart"));
@@ -123,6 +121,8 @@ for (i = 0; i < cart.length; i++) {
 
       cartCount();
     });
+
+    console.table(cart)
 }
 
 // Section du formulaire avec validation de tous les champs
