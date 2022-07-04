@@ -81,8 +81,9 @@ for (i = 0; i < cart.length; i++) {
       itemDescription.appendChild(newPrice);
       imageContainer.appendChild(newImage);
       localStorage.setItem("cart", JSON.stringify(cart));
-      // Regex pour interdire à l'utiliser d'entrer des strings dans les inputs de quantité
 
+
+      // Regex pour interdire à l'utiliser d'entrer des strings dans les inputs de quantité
       function valideInteger(e) {
         let regexInput = /^[0-9]+$/;
         return e.match(regexInput);
@@ -114,21 +115,23 @@ for (i = 0; i < cart.length; i++) {
 
       cartCount();
 
-      // Suppression d'un article sur lequel on clique suite au lancement de cette fonction
-      deleteParagraph.addEventListener("click", function (p) {
+      // Suppression d'un article
+      deleteParagraph.addEventListener("click", function deleteItem (p) {
         p.preventDefault();
         let cart = JSON.parse(localStorage.getItem("cart"));
-          cart = cart.filter((element) => {
-            element.productId     && deleteParagraph.dataset.id ||
-            element.colorsProduct && deleteParagraph.dataset.color
-            console.log(element.productId);
-            console.log(element.colorsProduct);
-            console.log(deleteParagraph.dataset.color);
-            console.log(deleteParagraph.dataset.id);
-          });
-          
-          p.target.closest(".cart__item").remove();
-          localStorage.setItem("cart", JSON.stringify(cart));
+            for (g = 0; g < cart.length; g++) {
+                if (
+                  cart[g].productId     === deleteParagraph.dataset.id &&
+                  cart[g].colorsProduct === deleteParagraph.dataset.color
+                )
+                 {
+                  p.target.closest(".cart__item").remove();
+                  let newCart = JSON.parse(localStorage.getItem('cart'))
+                  newCart.splice([g],1)
+                  localStorage.setItem("cart", JSON.stringify(newCart));
+                  location.reload(); 
+                 }
+            }
         }
       );
     });
@@ -258,8 +261,14 @@ formulaire.addEventListener("submit", function (e) {
     .then((res) => res.json())
     .then((data) => {
       console.log(data);
-      // localStorage.clear();
+      if (!cart.length <= 0) {
+        window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
+      }
 
-      window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
+      else {
+        alert ("Votre panier est vide, vous ne pouvez pas envoyer de commande. Donc nous vous renvoyons vers notre sélection d'articles")
+        window.location.href= "index.html"; 
+
+      }
     });
 });
