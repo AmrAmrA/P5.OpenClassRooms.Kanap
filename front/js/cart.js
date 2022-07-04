@@ -11,61 +11,62 @@ for (i = 0; i < cart.length; i++) {
     .then((response) => response.json())
     .then((data) => {
       // Création et placement des éléments HTML dans le DOM
+
+      // Création de l'élément HTML Article
       let newSection = document.createElement("article");
       newSection.classList.add("cart__item");
       newSection.dataset.id = `${itemId}`;
       newSection.dataset.color = `${itemColor}`;
-
       globalSection.appendChild(newSection);
 
+      // Option de suppression d'article
       let deleteContainer = document.createElement("div");
       deleteContainer.classList.add("cart__item__content__settings__delete");
-
       let deleteParagraph = document.createElement("p");
       deleteParagraph.classList.add("deleteItem");
       deleteParagraph.innerHTML = "Supprimer";
+      deleteParagraph.dataset.id = `${itemId}`;
+      deleteParagraph.dataset.color = `${itemColor}`;
 
+      // Partie HTML concernant la quantité contenant un texte et un input
       let quantityContainer = document.createElement("div");
       quantityContainer.classList.add("cart__item__content__settings");
-
       let quantityUnderContainer = document.createElement("div");
       quantityUnderContainer.classList.add(
         "cart__item__content__settings__quantity"
       );
-
       let quantityParagraph = document.createElement("p");
       quantityParagraph.innerHTML = "Qté:";
-
       let quantityInput = document.createElement("input");
       quantityInput.value = itemQuantity;
-
       quantityInput.setAttribute("type", "number");
-      Object.assign(quantityInput, {
-        min: 1,
-        max: 100,
-      });
+      quantityInput.classList.add('itemQuantity')
+      quantityInput.setAttribute("name", "itemQuantity");
+      Object.assign(quantityInput, { min: 1, max: 100 });
 
+      // Nom du canapé
       let newTitle = document.createElement("h2");
       newTitle.innerText = data.name;
 
+      // Couleur du canapé
       let newColor = document.createElement("p");
       newColor.innerHTML += `${itemColor}`;
-
+      // Prix du canapé
       let newPrice = document.createElement("p");
-      newPrice.innerText = data.price += `${"€"}`;
-
+      newPrice.innerText = data.price * itemQuantity + `${" €"}`;
+      // Image du canapé
       let newImage = document.createElement("img");
       newImage.src = data.imageUrl;
       newImage.alt += `${data.altTxt}`;
-
       let imageContainer = document.createElement("div");
       imageContainer.classList.add("cart__item__img");
       newSection.appendChild(imageContainer);
-
+      // Container qui regroupe l'image, le prix, la quantité, le nom et l'image du canapé
       let descriptionContainer = document.createElement("div");
       descriptionContainer.classList.add("cart__item__content");
       newSection.appendChild(descriptionContainer);
 
+      // On imbrique des éléments HTML pour correspondre au design initial imposé en HTML
       itemDescription = document.createElement("div");
       itemDescription.classList.add("cart__item__content__description");
       descriptionContainer.appendChild(itemDescription);
@@ -79,9 +80,8 @@ for (i = 0; i < cart.length; i++) {
       itemDescription.appendChild(newColor);
       itemDescription.appendChild(newPrice);
       imageContainer.appendChild(newImage);
-
-      // Regex to prohibit strings in the input values
-      quantityInput.addEventListener("input", setInputValue);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      // Regex pour interdire à l'utiliser d'entrer des strings dans les inputs de quantité
 
       function valideInteger(e) {
         let regexInput = /^[0-9]+$/;
@@ -101,13 +101,6 @@ for (i = 0; i < cart.length; i++) {
         }
       }
 
-      deleteParagraph.addEventListener("click", function (p) {
-        p.target.closest(".cart__item").remove();
-        localStorage.setItem("cart", JSON.stringify(cart));
-        console.log(cart);
-        location.reload;
-      });
-
       function cartCount() {
         let newCart = JSON.parse(localStorage.getItem("cart"));
         let totalArticle = 0;
@@ -120,9 +113,25 @@ for (i = 0; i < cart.length; i++) {
       }
 
       cartCount();
-    });
 
-    console.table(cart)
+      // Suppression d'un article sur lequel on clique suite au lancement de cette fonction
+      deleteParagraph.addEventListener("click", function (p) {
+        p.preventDefault();
+        let cart = JSON.parse(localStorage.getItem("cart"));
+          cart = cart.filter((element) => {
+            element.productId     && deleteParagraph.dataset.id ||
+            element.colorsProduct && deleteParagraph.dataset.color
+            console.log(element.productId);
+            console.log(element.colorsProduct);
+            console.log(deleteParagraph.dataset.color);
+            console.log(deleteParagraph.dataset.id);
+          });
+          
+          p.target.closest(".cart__item").remove();
+          localStorage.setItem("cart", JSON.stringify(cart));
+        }
+      );
+    });
 }
 
 // Section du formulaire avec validation de tous les champs

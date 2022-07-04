@@ -6,9 +6,7 @@ function productComponents() {
   fetch(`http://localhost:3000/api/products/${productId}`)
     .then((response) => response.json())
     .then((data) => {
-      document.querySelector(
-        ".item__img"
-      ).innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
+      document.querySelector(".item__img").innerHTML = `<img src="${data.imageUrl}" alt="${data.altTxt}">`;
       document.querySelector(".item #title").innerText = data.name;
       document.querySelector(".item #price").innerText = data.price;
       document.querySelector(".item #description").innerText = data.description;
@@ -63,7 +61,7 @@ function addProduct() {
       let findProduct = cart.find(
         (p) =>
           p.colorsProduct == productContainer.colorsProduct &&
-          p.productId == productContainer.productId
+          p.productId     == productContainer.productId
       );
       if (findProduct != undefined) {
         findProduct.quantityProduct += productContainer.quantityProduct;
