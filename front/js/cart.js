@@ -84,36 +84,36 @@ for (i = 0; i < cart.length; i++) {
 
 
       // Regex pour interdire à l'utiliser d'entrer des strings dans les inputs de quantité
+      quantityInput.addEventListener('input', setInputValue); 
+
       function valideInteger(e) {
-        let regexInput = /^[0-9]+$/;
-        return e.match(regexInput);
+              let regexInput = /^[0-9]+$/; 
+              return e.match(regexInput); 
       }
 
       function setInputValue() {
-        if (
-          !valideInteger(quantityInput.value) ||
-          quantityInput.value > 100 ||
-          quantityInput.value <= 0
-        ) {
-          quantityInput.value = quantityInput.value.substring(
-            0,
-            quantityInput.value.length - 1
-          );
-        }
+              if (!valideInteger(quantityInput.value) || (quantityInput.value > 100)  || (quantityInput.value <= 0))   {
+                      quantityInput.value = quantityInput.value.substring(0, quantityInput.value.length-1)
+              }
+              
       }
 
+      // Fonction qui permet de calculer le nombre de produits et leur prix global
       function cartCount() {
-        let newCart = JSON.parse(localStorage.getItem("cart"));
+        let quantityCart = JSON.parse(localStorage.getItem("cart"));
         let totalArticle = 0;
-        newCart.forEach((product) => {
+        let totalPrice = 0; 
+        quantityCart.forEach((product) => {
           totalArticle += parseInt(product.quantityProduct);
-          let ArticlesQuantity = (document.getElementById(
-            "totalQuantity"
-          ).textContent = totalArticle);
+          let ArticlesQuantity = (document.getElementById("totalQuantity").textContent = totalArticle);
+        });
+        quantityCart.forEach((product) => {
+          totalPrice += product.priceProduct;
+          let ArticlesPrice = (document.getElementById("totalPrice").textContent = totalPrice);
         });
       }
 
-      cartCount();
+      cartCount(); 
 
       // Suppression d'un article
       deleteParagraph.addEventListener("click", function deleteItem (p) {
@@ -134,6 +134,12 @@ for (i = 0; i < cart.length; i++) {
             }
         }
       );
+
+
+       
+        
+
+
     });
 }
 
@@ -234,7 +240,6 @@ formulaire.addEventListener("submit", function (e) {
   let productsId = [];
   for (let i = 0; i < cart.length; i++) {
     productsId.push(cart[i].productId);
-    console.log(cart[i].productId);
   }
 
   let order = {
@@ -248,7 +253,6 @@ formulaire.addEventListener("submit", function (e) {
     products: productsId,
   };
 
-  console.log(order);
 
   let options = {
     method: "POST",
@@ -260,7 +264,6 @@ formulaire.addEventListener("submit", function (e) {
   fetch("http://localhost:3000/api/products/order", options)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       if (!cart.length <= 0) {
         window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
       }
