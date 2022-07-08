@@ -110,7 +110,9 @@ for (i = 0; i < cart.length; i++) {
         let totalPrice = 0;
         quantityCart.forEach((product) => {
           totalArticle += parseInt(product.quantityProduct);
-          let ArticlesQuantity = (document.getElementById("totalQuantity").textContent = totalArticle);
+          let ArticlesQuantity = (document.getElementById(
+            "totalQuantity"
+          ).textContent = totalArticle);
         });
         quantityCart.forEach((product) => {
           totalPrice += product.priceProduct;
@@ -139,46 +141,32 @@ for (i = 0; i < cart.length; i++) {
           }
         }
       });
+
       // Fonction pour incrémenter et décrementer le total des articles et leur prix
       // Modification de la quantité et du prix
       quantityInput.addEventListener("change", () => {
         articleToChange = quantityInput.closest("article");
         let articleId = articleToChange.getAttribute("data-id");
         let articleColor = articleToChange.getAttribute("data-color");
-        let productTable = [];
-        let quantityDynamic; 
+        let quantityDynamic = 0;
+        let priceDynamic    = 0; 
 
-        cart.forEach((item) => {
-          quantityDynamic = parseInt(item.quantityProduct); 
-
-
-
-
+        for (b = 0; b < cart.length; b++) {
           if (
-            item.colorsProduct === articleColor &&
-            item.productId === articleId
+            cart[b].colorsProduct === articleColor &&
+            cart[b].productId === articleId
           ) {
-            item.quantityProduct = quantityInput.valueAsNumber;
+            cart[b].quantityProduct = quantityInput.valueAsNumber;
+            newPrice.innerText = cart[b].priceProduct * quantityInput.valueAsNumber;
 
-
-
-
+            localStorage.setItem("cart", JSON.stringify(cart));
+            quantityDynamic = parseInt(cart[b].quantityProduct);
 
             totalQuantity.textContent = quantityDynamic;
 
-
-
-
-
-            
-            newPrice.innerText =
-              item.priceProduct * quantityInput.valueAsNumber;
-            console.log(item.quantityProduct);
-            console.log(cart[0].quantityProduct);
-            productTable.push(item);
-            localStorage.setItem("cart", JSON.stringify(productTable));
+            cartCount();
           }
-        });
+        }
       });
     });
 }
