@@ -40,7 +40,7 @@ for (i = 0; i < cart.length; i++) {
       let quantityInput = document.createElement("input");
       quantityInput.value = itemQuantity;
       quantityInput.setAttribute("type", "number");
-      quantityInput.classList.add('itemQuantity')
+      quantityInput.classList.add("itemQuantity");
       quantityInput.setAttribute("name", "itemQuantity");
       Object.assign(quantityInput, { min: 1, max: 100 });
 
@@ -82,64 +82,104 @@ for (i = 0; i < cart.length; i++) {
       imageContainer.appendChild(newImage);
       localStorage.setItem("cart", JSON.stringify(cart));
 
-
       // Regex pour interdire à l'utiliser d'entrer des strings dans les inputs de quantité
-      quantityInput.addEventListener('input', setInputValue); 
+      quantityInput.addEventListener("input", setInputValue);
 
       function valideInteger(e) {
-              let regexInput = /^[0-9]+$/; 
-              return e.match(regexInput); 
+        let regexInput = /^[0-9]+$/;
+        return e.match(regexInput);
       }
 
       function setInputValue() {
-              if (!valideInteger(quantityInput.value) || (quantityInput.value > 100)  || (quantityInput.value <= 0))   {
-                      quantityInput.value = quantityInput.value.substring(0, quantityInput.value.length-1)
-              }
-              
+        if (
+          !valideInteger(quantityInput.value) ||
+          quantityInput.value > 100 ||
+          quantityInput.value <= 0
+        ) {
+          quantityInput.value = quantityInput.value.substring(
+            0,
+            quantityInput.value.length - 1
+          );
+        }
       }
 
       // Fonction qui permet de calculer le nombre de produits et leur prix global
       function cartCount() {
         let quantityCart = JSON.parse(localStorage.getItem("cart"));
         let totalArticle = 0;
-        let totalPrice = 0; 
+        let totalPrice = 0;
         quantityCart.forEach((product) => {
           totalArticle += parseInt(product.quantityProduct);
           let ArticlesQuantity = (document.getElementById("totalQuantity").textContent = totalArticle);
         });
         quantityCart.forEach((product) => {
           totalPrice += product.priceProduct;
-          let ArticlesPrice = (document.getElementById("totalPrice").textContent = totalPrice);
+          let ArticlesPrice = (document.getElementById(
+            "totalPrice"
+          ).textContent = totalPrice);
         });
       }
 
-      cartCount(); 
+      cartCount();
 
       // Suppression d'un article
-      deleteParagraph.addEventListener("click", function deleteItem (p) {
+      deleteParagraph.addEventListener("click", function deleteItem(p) {
         p.preventDefault();
         let cart = JSON.parse(localStorage.getItem("cart"));
-            for (g = 0; g < cart.length; g++) {
-                if (
-                  cart[g].productId     === deleteParagraph.dataset.id &&
-                  cart[g].colorsProduct === deleteParagraph.dataset.color
-                )
-                 {
-                  p.target.closest(".cart__item").remove();
-                  let newCart = JSON.parse(localStorage.getItem('cart'))
-                  newCart.splice([g],1)
-                  localStorage.setItem("cart", JSON.stringify(newCart));
-                  location.reload(); 
-                 }
-            }
+        for (g = 0; g < cart.length; g++) {
+          if (
+            cart[g].productId === deleteParagraph.dataset.id &&
+            cart[g].colorsProduct === deleteParagraph.dataset.color
+          ) {
+            p.target.closest(".cart__item").remove();
+            let newCart = JSON.parse(localStorage.getItem("cart"));
+            newCart.splice([g], 1);
+            localStorage.setItem("cart", JSON.stringify(newCart));
+            location.reload();
+          }
         }
-      );
+      });
+      // Fonction pour incrémenter et décrementer le total des articles et leur prix
+      // Modification de la quantité et du prix
+      quantityInput.addEventListener("change", () => {
+        articleToChange = quantityInput.closest("article");
+        let articleId = articleToChange.getAttribute("data-id");
+        let articleColor = articleToChange.getAttribute("data-color");
+        let productTable = [];
+        let quantityDynamic; 
+
+        cart.forEach((item) => {
+          quantityDynamic = parseInt(item.quantityProduct); 
 
 
-       
-        
 
 
+          if (
+            item.colorsProduct === articleColor &&
+            item.productId === articleId
+          ) {
+            item.quantityProduct = quantityInput.valueAsNumber;
+
+
+
+
+
+            totalQuantity.textContent = quantityDynamic;
+
+
+
+
+
+            
+            newPrice.innerText =
+              item.priceProduct * quantityInput.valueAsNumber;
+            console.log(item.quantityProduct);
+            console.log(cart[0].quantityProduct);
+            productTable.push(item);
+            localStorage.setItem("cart", JSON.stringify(productTable));
+          }
+        });
+      });
     });
 }
 
@@ -253,7 +293,6 @@ formulaire.addEventListener("submit", function (e) {
     products: productsId,
   };
 
-
   let options = {
     method: "POST",
     body: JSON.stringify(order),
@@ -266,12 +305,11 @@ formulaire.addEventListener("submit", function (e) {
     .then((data) => {
       if (!cart.length <= 0) {
         window.location.href = `/front/html/confirmation.html?orderId=${data.orderId}`;
-      }
-
-      else {
-        alert ("Votre panier est vide, vous ne pouvez pas envoyer de commande. Donc nous vous renvoyons vers notre sélection d'articles")
-        window.location.href= "index.html"; 
-
+      } else {
+        alert(
+          "Votre panier est vide, vous ne pouvez pas envoyer de commande. Donc nous vous renvoyons vers notre sélection d'articles"
+        );
+        window.location.href = "index.html";
       }
     });
 });
