@@ -141,41 +141,45 @@ for (i = 0; i < cart.length; i++) {
           }
         }
       });
-
       // Fonction pour incrémenter et décrementer le total des articles et leur prix
       // Modification de la quantité et du prix
-      quantityInput.addEventListener("change", (e) => {
-        e.preventDefault
-        articleToChange = quantityInput.closest("article");
-        let articleId = articleToChange.getAttribute("data-id");
-        let articleColor = articleToChange.getAttribute("data-color");
-        let quantityDynamic = 0;
-        let priceDynamic    = []; 
-
-        for (b = 0; b < cart.length; b++) {
-          if (
-            cart[b].colorsProduct === articleColor &&
-            cart[b].productId     === articleId
-          ) {
-            cart[b].quantityProduct = quantityInput.valueAsNumber;
-            newPrice.innerText = cart[b].priceProduct * quantityInput.valueAsNumber + `${" €"}`;
-            
-            localStorage.setItem("cart", JSON.stringify(cart));
-            quantityDynamic = parseInt(cart[b].quantityProduct);
-            document.getElementById('totalQuantity').textContent  = quantityDynamic;
-            cartCount();
-            console.log(newPrice.textContent);
-          }
-          let calculTotalPrice = cart[b].priceProduct * quantityDynamic; 
-          priceDynamic.push(calculTotalPrice); 
-          let reducer = (accumulator, currentValue) => accumulator + currentValue; 
-          let notrePrix = priceDynamic.reduce(reducer, 0); 
-          document.getElementById('totalPrice').textContent  = notrePrix;
-        }
-      });
+      // function modifyQuantity() {
+      //   quantityInput.addEventListener("change", (e) => {
+      //     e.preventDefault()
+      //     articleToChange     = quantityInput.closest("article");
+      //     let articleId       = articleToChange.getAttribute("data-id");
+      //     let articleColor    = articleToChange.getAttribute("data-color");
+      //     let quantityDynamic = 0;
+      //     let priceDynamic    = 0; 
+      //     for (b = 0; b < cart.length; b++) {
+      //       if (
+      //         cart[b].colorsProduct === articleColor &&
+      //         cart[b].productId     === articleId
+      //       ) {
+      //         cartCount();
+      //         cart[b].quantityProduct = quantityInput.valueAsNumber;
+      //         cart[b].priceProduct   =  parseInt(newPrice.innerHTML) * cart[b].quantityProduct;
+      //         quantityDynamic         = parseInt(cart[b].quantityProduct);
+      //         document.getElementById('totalQuantity').textContent  = quantityDynamic;
+      //         document.getElementById('totalPrice').textContent  = cart[b].priceProduct;
+      //         localStorage.setItem("cart", JSON.stringify(cart));
+              
+              
+      //       }
+      //     }
+      //   });
+      // }
+      // modifyQuantity(); 
     });
-}
-
+  }
+  // let calculTotalPrice = cart[b].priceProduct * quantityDynamic; 
+  // priceDynamic.push(calculTotalPrice); 
+  // let reducer = (accumulator, currentValue) => accumulator + currentValue; 
+  // let notrePrix = priceDynamic.reduce(reducer, 0); 
+  // document.getElementById('totalPrice').textContent  = notrePrix;
+  // console.log(notrePrix);
+  // console.log(cart);
+  
 // Section du formulaire avec validation de tous les champs
 
 // Création des expressions régulières => RegExp
