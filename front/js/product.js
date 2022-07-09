@@ -33,7 +33,7 @@ function productComponents() {
             colorsProduct,
             quantityProduct,
             productId,
-            priceProduct
+            priceProduct,
           };
 
           // Condition pour accepter un produit dans le localStorage

@@ -144,28 +144,33 @@ for (i = 0; i < cart.length; i++) {
 
       // Fonction pour incrémenter et décrementer le total des articles et leur prix
       // Modification de la quantité et du prix
-      quantityInput.addEventListener("change", () => {
+      quantityInput.addEventListener("change", (e) => {
+        e.preventDefault
         articleToChange = quantityInput.closest("article");
         let articleId = articleToChange.getAttribute("data-id");
         let articleColor = articleToChange.getAttribute("data-color");
         let quantityDynamic = 0;
-        let priceDynamic    = 0; 
+        let priceDynamic    = []; 
 
         for (b = 0; b < cart.length; b++) {
           if (
             cart[b].colorsProduct === articleColor &&
-            cart[b].productId === articleId
+            cart[b].productId     === articleId
           ) {
             cart[b].quantityProduct = quantityInput.valueAsNumber;
-            newPrice.innerText = cart[b].priceProduct * quantityInput.valueAsNumber;
-
+            newPrice.innerText = cart[b].priceProduct * quantityInput.valueAsNumber + `${" €"}`;
+            
             localStorage.setItem("cart", JSON.stringify(cart));
             quantityDynamic = parseInt(cart[b].quantityProduct);
-
-            totalQuantity.textContent = quantityDynamic;
-
+            document.getElementById('totalQuantity').textContent  = quantityDynamic;
             cartCount();
+            console.log(newPrice.textContent);
           }
+          let calculTotalPrice = cart[b].priceProduct * quantityDynamic; 
+          priceDynamic.push(calculTotalPrice); 
+          let reducer = (accumulator, currentValue) => accumulator + currentValue; 
+          let notrePrix = priceDynamic.reduce(reducer, 0); 
+          document.getElementById('totalPrice').textContent  = notrePrix;
         }
       });
     });
