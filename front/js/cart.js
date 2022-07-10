@@ -1,15 +1,23 @@
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
+// Condition qui affiche un message pour notifier à l'utilisateur que son panier est vide
+// L'intérêt de la condition est d'empêcher l'utilisateur de tenter d'envoyer une commande en ayant aucun article
+if(cart.length <= 0) {
+  document.querySelector('.cart__order').style.display = 'none'; 
+  document.querySelector('.cart__price').style.display = 'none'; 
+  document.querySelector('h1').innerHTML = 'Votre Panier est vide'; 
+}
+
 let globalSection = document.querySelector("#cart__items");
 
 for (i = 0; i < cart.length; i++) {
   let itemId = cart[i].productId;
   let itemColor = cart[i].colorsProduct;
   let itemQuantity = cart[i].quantityProduct;
-
   fetch(`http://localhost:3000/api/products/${itemId}`)
     .then((response) => response.json())
     .then((data) => {
+
       // Création et placement des éléments HTML dans le DOM
 
       // Création de l'élément HTML Article
@@ -101,33 +109,29 @@ for (i = 0; i < cart.length; i++) {
             quantityInput.value.length - 1
           );
         }
+
+        // else if(quantityInput.value == '') {
+        //   quantityInput.value == 1; 
+        //   quantityInput.innerText = 1; 
+        // }
       }
 
-      // Fonction qui permet de calculer le nombre de produits et leur prix global
+      // Fonction qui affiche le prix et la quantité des éléments sélectionnés 
       function cartCount() {
-        let quantityCart = JSON.parse(localStorage.getItem("cart"));
         let totalArticle = 0;
         let totalPrice = 0;
-        quantityCart.forEach((product) => {
+        cart.forEach((product) => {
           totalArticle += parseInt(product.quantityProduct);
-          let ArticlesQuantity = (document.getElementById(
-            "totalQuantity"
-          ).textContent = totalArticle);
-        });
-        quantityCart.forEach((product) => {
           totalPrice += product.priceProduct;
-          let ArticlesPrice = (document.getElementById(
-            "totalPrice"
-          ).textContent = totalPrice);
+          document.getElementById("totalQuantity").textContent  = totalArticle;
+          document.getElementById("totalPrice").textContent     = totalPrice;
         });
       }
-
       cartCount();
 
       // Suppression d'un article
       deleteParagraph.addEventListener("click", function deleteItem(p) {
         p.preventDefault();
-        let cart = JSON.parse(localStorage.getItem("cart"));
         for (g = 0; g < cart.length; g++) {
           if (
             cart[g].productId === deleteParagraph.dataset.id &&
@@ -141,44 +145,50 @@ for (i = 0; i < cart.length; i++) {
           }
         }
       });
-      // Fonction pour incrémenter et décrementer le total des articles et leur prix
-      // Modification de la quantité et du prix
-      // function modifyQuantity() {
-      //   quantityInput.addEventListener("change", (e) => {
-      //     e.preventDefault()
-      //     articleToChange     = quantityInput.closest("article");
-      //     let articleId       = articleToChange.getAttribute("data-id");
-      //     let articleColor    = articleToChange.getAttribute("data-color");
-      //     let quantityDynamic = 0;
-      //     let priceDynamic    = 0; 
-      //     for (b = 0; b < cart.length; b++) {
-      //       if (
-      //         cart[b].colorsProduct === articleColor &&
-      //         cart[b].productId     === articleId
-      //       ) {
-      //         cartCount();
-      //         cart[b].quantityProduct = quantityInput.valueAsNumber;
-      //         cart[b].priceProduct   =  parseInt(newPrice.innerHTML) * cart[b].quantityProduct;
-      //         quantityDynamic         = parseInt(cart[b].quantityProduct);
-      //         document.getElementById('totalQuantity').textContent  = quantityDynamic;
-      //         document.getElementById('totalPrice').textContent  = cart[b].priceProduct;
-      //         localStorage.setItem("cart", JSON.stringify(cart));
-              
-              
-      //       }
-      //     }
-      //   });
-      // }
-      // modifyQuantity(); 
+
+      // Fonction qui incrémente ou décremente le nombre total d'articles en appuyant sur les inputs 
+      function changeQuantity() {
+        newSection.addEventListener("change", (o) => {
+          o.preventDefault(); 
+          console.log(cart);
+          for (item of cart) if (
+            item.productId === newSection.getAttribute('data-id') &&
+            item.colorsProduct === newSection.getAttribute('data-color')
+          ) {
+              item.quantityProduct = o.target.value; 
+              localStorage.setItem("cart", JSON.stringify(cart))
+              calculateTotals(); 
+          }
+        });
+      }
+      changeQuantity(); 
+
+        // Fonction qui calcule l'ensemble des produits et des prix additionnées 
+        function calculateTotals() {
+          let allTotalPrice = 0; 
+          let FinalPrices = 0; 
+          let allTotalArticles =0; 
+          // newPrice.innerText = item.priceProduct * item.quantityProduct + `${" €"}`;
+          for(item of cart) {
+            allTotalArticles += JSON.parse(item.quantityProduct); 
+            FinalPrices = JSON.parse(item.quantityProduct) * JSON.parse(item.priceProduct); 
+            allTotalPrice += FinalPrices; 
+          }
+          document.getElementById("totalQuantity").textContent = allTotalArticles;
+          document.getElementById("totalPrice").textContent = allTotalPrice;
+
+          // Conditions pour accorder le pluriel et le singulier de 'articles' avec la quantité de produits
+          if(allTotalArticles == 1) {
+            document.getElementById("totalQuantity").nextSibling.textContent = " article) :"
+          } else {
+            document.getElementById("totalQuantity").nextSibling.textContent = " articles) :"
+          } 
+        }
+        // Appel à la fonction pour qu'elle s'exécute
+        calculateTotals();
     });
-  }
-  // let calculTotalPrice = cart[b].priceProduct * quantityDynamic; 
-  // priceDynamic.push(calculTotalPrice); 
-  // let reducer = (accumulator, currentValue) => accumulator + currentValue; 
-  // let notrePrix = priceDynamic.reduce(reducer, 0); 
-  // document.getElementById('totalPrice').textContent  = notrePrix;
-  // console.log(notrePrix);
-  // console.log(cart);
+}
+
   
 // Section du formulaire avec validation de tous les champs
 
