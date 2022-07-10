@@ -1,19 +1,24 @@
+// Initialisation du panier
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 // Condition qui affiche un message pour notifier à l'utilisateur que son panier est vide
 // L'intérêt de la condition est d'empêcher l'utilisateur de tenter d'envoyer une commande en ayant aucun article
-if(cart.length <= 0) {
-  document.querySelector('.cart__order').style.display = 'none'; 
-  document.querySelector('.cart__price').style.display = 'none'; 
-  document.querySelector('h1').innerHTML = 'Votre Panier est vide'; 
+function emptyCart() {
+  if(cart.length <= 0) {
+    document.querySelector('.cart__order').style.display = 'none'; 
+    document.querySelector('.cart__price').style.display = 'none'; 
+    document.querySelector('h1').innerHTML = 'Votre Panier est vide'; 
+  }
 }
+emptyCart(); 
 
 let globalSection = document.querySelector("#cart__items");
-
+// Boucler à travers le panier pour afficher tous les articles qu'il contient 
 for (i = 0; i < cart.length; i++) {
   let itemId = cart[i].productId;
   let itemColor = cart[i].colorsProduct;
   let itemQuantity = cart[i].quantityProduct;
+  // Appel à l'API avec l'ID du produit sélectionné pour afficher ses propres informations à lui 
   fetch(`http://localhost:3000/api/products/${itemId}`)
     .then((response) => response.json())
     .then((data) => {
@@ -94,11 +99,13 @@ for (i = 0; i < cart.length; i++) {
       quantityInput.addEventListener("input", setInputValue);
 
       function valideInteger(e) {
+        
         let regexInput = /^[0-9]+$/;
         return e.match(regexInput);
       }
 
-      function setInputValue() {
+      function setInputValue(e) {
+        
         if (
           !valideInteger(quantityInput.value) ||
           quantityInput.value > 100 ||
@@ -109,11 +116,6 @@ for (i = 0; i < cart.length; i++) {
             quantityInput.value.length - 1
           );
         }
-
-        // else if(quantityInput.value == '') {
-        //   quantityInput.value == 1; 
-        //   quantityInput.innerText = 1; 
-        // }
       }
 
       // Fonction qui affiche le prix et la quantité des éléments sélectionnés 
@@ -130,21 +132,23 @@ for (i = 0; i < cart.length; i++) {
       cartCount();
 
       // Suppression d'un article
-      deleteParagraph.addEventListener("click", function deleteItem(p) {
-        p.preventDefault();
-        for (g = 0; g < cart.length; g++) {
-          if (
-            cart[g].productId === deleteParagraph.dataset.id &&
-            cart[g].colorsProduct === deleteParagraph.dataset.color
-          ) {
-            p.target.closest(".cart__item").remove();
-            let newCart = JSON.parse(localStorage.getItem("cart"));
-            newCart.splice([g], 1);
-            localStorage.setItem("cart", JSON.stringify(newCart));
-            location.reload();
+      function deleteOneArticle()  {
+        deleteParagraph.addEventListener("click", function deleteItem(p) {
+          for (g = 0; g < cart.length; g++) {
+            if (
+              cart[g].productId === deleteParagraph.dataset.id &&
+              cart[g].colorsProduct === deleteParagraph.dataset.color
+            ) {
+              p.target.closest(".cart__item").remove();
+              let newCart = JSON.parse(localStorage.getItem("cart"));
+              newCart.splice([g], 1);
+              localStorage.setItem("cart", JSON.stringify(newCart));
+              location.reload();
+            }
           }
-        }
-      });
+        });
+      }
+      deleteOneArticle(); 
 
       // Fonction qui incrémente ou décremente le nombre total d'articles en appuyant sur les inputs 
       function changeQuantity() {
@@ -164,7 +168,7 @@ for (i = 0; i < cart.length; i++) {
       changeQuantity(); 
 
         // Fonction qui calcule l'ensemble des produits et des prix additionnées 
-        function calculateTotals() {
+        function calculateTotals(e) {   
           let allTotalPrice = 0; 
           let FinalPrices = 0; 
           let allTotalArticles =0; 
@@ -207,7 +211,8 @@ let emailReg = new RegExp(
 let formulaire = document.querySelector(".cart__order__form");
 
 // Validation du formulaire
-function ValidationFormulaire() {
+function ValidationFormulaire(e) {
+  
   // Validation du prénom
 
   formulaire.firstName.addEventListener("input", function () {
@@ -288,7 +293,7 @@ formulaire.addEventListener("submit", function (e) {
   for (let i = 0; i < cart.length; i++) {
     productsId.push(cart[i].productId);
   }
-
+  // Constitution de l'objet à envoyer au Backend avec des éléments correspondant au format attendu dans le dossier controllers
   let order = {
     contact: {
       firstName: formulaire.firstName.value,
