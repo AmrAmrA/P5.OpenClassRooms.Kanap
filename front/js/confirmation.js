@@ -8,5 +8,5 @@ function searchId() {
   textId.innerHTML = `${productLocation}`;
   localStorage.clear();
 }
-// Appel de la fonction pour qu'elle s'éxécute 
+// Appel de la fonction pour qu'elle s'exécute 
 searchId();

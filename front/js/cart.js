@@ -104,7 +104,7 @@ for (i = 0; i < cart.length; i++) {
         return e.match(regexInput);
       }
 
-      function setInputValue(e) {
+      function setInputValue() {
         
         if (
           !valideInteger(quantityInput.value) ||
@@ -168,19 +168,27 @@ for (i = 0; i < cart.length; i++) {
       changeQuantity(); 
 
         // Fonction qui calcule l'ensemble des produits et des prix additionnées 
-        function calculateTotals(e) {   
+        function calculateTotals() {   
           let allTotalPrice = 0; 
           let FinalPrices = 0; 
           let allTotalArticles =0; 
-          // newPrice.innerText = item.priceProduct * item.quantityProduct + `${" €"}`;
+
+          // Condition pour règler le problème des inputs vides 
+          if(quantityInput.value === '') {
+            quantityInput.value = 1; 
+            item.quantityProduct = 1; 
+            localStorage.setItem("cart", JSON.stringify(cart))
+          }
+
+          
           for(item of cart) {
             allTotalArticles += JSON.parse(item.quantityProduct); 
             FinalPrices = JSON.parse(item.quantityProduct) * JSON.parse(item.priceProduct); 
-            allTotalPrice += FinalPrices; 
+            allTotalPrice += FinalPrices;
           }
           document.getElementById("totalQuantity").textContent = allTotalArticles;
           document.getElementById("totalPrice").textContent = allTotalPrice;
-
+          
           // Conditions pour accorder le pluriel et le singulier de 'articles' avec la quantité de produits
           if(allTotalArticles == 1) {
             document.getElementById("totalQuantity").nextSibling.textContent = " article) :"
@@ -190,6 +198,8 @@ for (i = 0; i < cart.length; i++) {
         }
         // Appel à la fonction pour qu'elle s'exécute
         calculateTotals();
+        console.log(quantityInput.valueAsNumber);        
+
     });
 }
 
