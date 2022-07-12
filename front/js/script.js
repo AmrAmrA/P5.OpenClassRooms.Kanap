@@ -28,6 +28,5 @@ function callProducts() {
       }
     });
 }
-
 // Appel de la fonction pour l'exécuter
 callProducts();

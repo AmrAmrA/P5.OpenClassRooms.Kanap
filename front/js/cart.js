@@ -10,6 +10,7 @@ function emptyCart() {
     document.querySelector('h1').innerHTML = 'Votre Panier est vide'; 
   }
 }
+// Appel à la fonctiuon pour la lancer 
 emptyCart(); 
 
 let globalSection = document.querySelector("#cart__items");
@@ -129,11 +130,12 @@ for (i = 0; i < cart.length; i++) {
           document.getElementById("totalPrice").textContent     = totalPrice;
         });
       }
+      // Appel de la fonction pour qu'elle s'exécute
       cartCount();
 
       // Suppression d'un article
       function deleteOneArticle()  {
-        deleteParagraph.addEventListener("click", function deleteItem(p) {
+        deleteParagraph.addEventListener("click", function(p) {
           for (g = 0; g < cart.length; g++) {
             if (
               cart[g].productId === deleteParagraph.dataset.id &&
@@ -148,13 +150,13 @@ for (i = 0; i < cart.length; i++) {
           }
         });
       }
+      // Appel de la fonction pour qu'elle s'exécute
       deleteOneArticle(); 
 
       // Fonction qui incrémente ou décremente le nombre total d'articles en appuyant sur les inputs 
       function changeQuantity() {
         newSection.addEventListener("change", (o) => {
           o.preventDefault(); 
-          console.log(cart);
           for (item of cart) if (
             item.productId === newSection.getAttribute('data-id') &&
             item.colorsProduct === newSection.getAttribute('data-color')
@@ -165,6 +167,7 @@ for (i = 0; i < cart.length; i++) {
           }
         });
       }
+      //Appel de la fonction pour qu'elle s'exécute
       changeQuantity(); 
 
         // Fonction qui calcule l'ensemble des produits et des prix additionnées 
@@ -174,18 +177,22 @@ for (i = 0; i < cart.length; i++) {
           let allTotalArticles =0; 
 
           // Condition pour règler le problème des inputs vides 
-          if(quantityInput.value === '') {
+          if(quantityInput.value === '' || quantityInput.value <= 0) {
             quantityInput.value = 1; 
             item.quantityProduct = 1; 
             localStorage.setItem("cart", JSON.stringify(cart))
           }
 
+          // Mise à jour du prix de chaque produit invidiuel à chaque fois qu'on change la quantité grâce à l'input qui lui est attribué
+          newPrice.innerText = item.priceProduct * item.quantityProduct + `${" €"}`;
           
+          // Boucle à travers le panier pour avoir le prix et la quantité gloabaux des articles
           for(item of cart) {
             allTotalArticles += JSON.parse(item.quantityProduct); 
             FinalPrices = JSON.parse(item.quantityProduct) * JSON.parse(item.priceProduct); 
             allTotalPrice += FinalPrices;
           }
+          // Injection dans le HTML des totaux des articles et des prix venant du panier 
           document.getElementById("totalQuantity").textContent = allTotalArticles;
           document.getElementById("totalPrice").textContent = allTotalPrice;
           
@@ -197,8 +204,7 @@ for (i = 0; i < cart.length; i++) {
           } 
         }
         // Appel à la fonction pour qu'elle s'exécute
-        calculateTotals();
-        console.log(quantityInput.valueAsNumber);        
+        calculateTotals();      
 
     });
 }
@@ -221,10 +227,9 @@ let emailReg = new RegExp(
 let formulaire = document.querySelector(".cart__order__form");
 
 // Validation du formulaire
-function ValidationFormulaire(e) {
+function ValidationFormulaire() {
   
   // Validation du prénom
-
   formulaire.firstName.addEventListener("input", function () {
     validPrenom(this);
   });
@@ -236,8 +241,8 @@ function ValidationFormulaire(e) {
       erreurPrenom.innerHTML = "Votre prénom est invalide";
     }
   };
-  // Validation du choix du nom
 
+  // Validation du choix du nom
   formulaire.lastName.addEventListener("input", function () {
     valideNomFamille(this);
   });
@@ -251,7 +256,6 @@ function ValidationFormulaire(e) {
   };
 
   // Validation de l'adresse postale
-
   formulaire.address.addEventListener("input", function () {
     validAddresse(this);
   });
@@ -265,7 +269,6 @@ function ValidationFormulaire(e) {
   };
 
   // Validation du nom de la ville
-
   formulaire.city.addEventListener("input", function () {
     validVille(this);
   });
@@ -279,7 +282,6 @@ function ValidationFormulaire(e) {
   };
 
   // Vdlidation du mail
-
   formulaire.email.addEventListener("input", function () {
     validEmail(this);
   });
@@ -296,7 +298,7 @@ function ValidationFormulaire(e) {
 ValidationFormulaire();
 
 // Envoi du formulaire validé vers le Backend
-formulaire.addEventListener("submit", function (e) {
+formulaire.addEventListener("submit", function sendFormulaire (e) {
   e.preventDefault();
 
   let productsId = [];
@@ -322,6 +324,7 @@ formulaire.addEventListener("submit", function (e) {
       "content-type": "application/json",
     },
   };
+  // Envoi de la requête avec la méthode POST et mise en place d'une condition pour gérer le cas d'un panier vide 
   fetch("http://localhost:3000/api/products/order", options)
     .then((res) => res.json())
     .then((data) => {
@@ -335,3 +338,5 @@ formulaire.addEventListener("submit", function (e) {
       }
     });
 });
+// Appel à la fonction pour qu'elle s'exécute
+sendFormulaire(); 

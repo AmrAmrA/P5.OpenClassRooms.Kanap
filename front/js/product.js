@@ -12,8 +12,7 @@ function productComponents() {
       document.querySelector(".item #title").innerText = data.name;
       document.querySelector(".item #price").innerHTML = `${data.price}`;
       document.querySelector(".item #description").innerText = data.description;
-      document.querySelector(".item #colors").insertAdjacentHTML(
-        "beforeend",
+      document.querySelector(".item #colors").insertAdjacentHTML("beforeend",
         data.colors.map((color) => `<option value="${color}">${color}</option>`)
       );
       function addProduct() {
@@ -26,9 +25,8 @@ function productComponents() {
           let colorsProduct = document.querySelector(".item #colors").value;
           let quantityProduct = parseInt(document.querySelector("#quantity").value);
           let priceProduct = parseInt(document.querySelector('#price').innerHTML) * quantityProduct; 
-          // Création d'un objet contenant les propriétés dont on a besoin pour stocker le produit dans le localstorage
 
-          
+          // Création d'un objet contenant les propriétés dont on a besoin pour stocker le produit dans le localstorage
           let productContainer = {
             colorsProduct,
             quantityProduct,
