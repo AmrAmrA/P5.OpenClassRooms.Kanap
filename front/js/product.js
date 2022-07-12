@@ -24,7 +24,7 @@ function productComponents() {
           // Initialistion de propriétés qui permettent d'identifier chque produit
           let colorsProduct = document.querySelector(".item #colors").value;
           let quantityProduct = parseInt(document.querySelector("#quantity").value);
-          let priceProduct = parseInt(document.querySelector('#price').innerHTML) * quantityProduct; 
+          let priceProduct = parseInt(document.querySelector('#price').innerHTML); 
 
           // Création d'un objet contenant les propriétés dont on a besoin pour stocker le produit dans le localstorage
           let productContainer = {

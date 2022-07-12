@@ -125,7 +125,7 @@ for (i = 0; i < cart.length; i++) {
         let totalPrice = 0;
         cart.forEach((product) => {
           totalArticle += parseInt(product.quantityProduct);
-          totalPrice += product.priceProduct;
+          totalPrice += product.priceProduct * parseInt(product.quantityProduct);
           document.getElementById("totalQuantity").textContent  = totalArticle;
           document.getElementById("totalPrice").textContent     = totalPrice;
         });
